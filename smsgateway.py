@@ -12,30 +12,22 @@ secret = 'mysecret'
 messages = []
 
 
-class SMSJsonEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, SMS):
-            print obj
-            return obj.sms
-        return obj
-
 app = Flask(__name__)
-app.json_encoder = SMSJsonEncoder
 api = restful.Api(app)
 
-class SMS(object):
+class SMS(dict):
     """ Basic SMS Object """
-
-    sms = {
-        "to"     : None,
-        "message": None,
-        "uuid"   : None
-        }
+    __allowed = ('to', 'message', 'uuid')
 
     def __init__(self, to, message):
-        self.sms['to']      = to
-        self.sms['message'] = message
-        self.sms['uuid']    = str(uuid4())
+        self['to']      = to
+        self['message'] = message
+        self['uuid']    = str(uuid4())
+
+    def __setitem__(self, k, v):
+        if k not in self.__allowed:
+            raise KeyError('key not allowed: %s' % k)
+        return super(SMS, self).__setitem__(k, v)
 
 
 class SMSSync(restful.Resource):
@@ -50,7 +42,7 @@ class SMSSync(restful.Resource):
 
             for uuid in data['message_uuids']:
                 for sms in messages:
-                    if uuid == sms.sms.uuid:
+                    if uuid == sms['uuid']:
                         messages.remove(sms)
 
 	    return jsonify(data)
@@ -59,7 +51,7 @@ class SMSSync(restful.Resource):
             message = request.form.get('message')
             sms = SMS(to, message)
             messages.append(sms)
-	    return jsonify(sms.sms)
+	    return jsonify(sms)
 
     def get(self):
         task = request.args.get('task')
