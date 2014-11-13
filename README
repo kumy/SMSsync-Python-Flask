@@ -7,6 +7,8 @@ Usage
 $ python smsgateway.py
 
 
+Submit new SMS
+==============
 
 $ curl http://127.0.0.1:5000/smssync?task=send -d "to=33701020304" -d "message=COUCOU" | jshon
 {
@@ -14,6 +16,10 @@ $ curl http://127.0.0.1:5000/smssync?task=send -d "to=33701020304" -d "message=C
  "to": "33701020304",
  "uuid": "5e69c7ca-efec-42f3-a5a0-59ae4d927276"
 }
+
+
+Consult pending SMS
+===================
 
 $ curl http://127.0.0.1:5000/smssync?task=send | jshon
 {
@@ -30,7 +36,11 @@ $ curl http://127.0.0.1:5000/smssync?task=send | jshon
   }
 }
 
-$ curl http://127.0.0.1:5000/smssync?task=sent -H "Content-Type: application/json" -d '{"queued_messages=": [ "5e69c7ca-efec-42f3-a5a0-59ae4d927276" ]}'
+
+Receive processing SMS IDs
+==========================
+
+$ curl http://127.0.0.1:5000/smssync?task=sent -H "Content-Type: application/json" -d '{"queued_messages": [ "5e69c7ca-efec-42f3-a5a0-59ae4d927276" ]}'
 {
   "message_uuids": []
 }
@@ -39,4 +49,26 @@ or
   "message_uuids": [
     "5e69c7ca-efec-42f3-a5a0-59ae4d927276"
     ]
+}
+
+
+Consult Waiting Delivery Requests
+=================================
+
+curl -s http://127.0.0.1:5000/smssync?task=result | jshon 
+{
+ "message_uuids": [
+  "a003c488-d21c-4117-a1bf-bec851fe5629"
+ ]
+}
+
+
+Receive Delivery Status
+=======================
+
+curl http://127.0.0.1:5000/smssync?task=result -H "Content-Type: application/json" -d '{"message_results": [ { "uuid": "ee378663-d9be-4ce4-93b6-1b4027f4fd9d", "sent_result_code": 0, "sent_result_message": "SMSSync Message Sent", "delivered_result_code": 0, "delivered_result_message": "SMS Delivered" } ]}' | jshon
+{
+  "message_uuids": [
+    "ee378663-d9be-4ce4-93b6-1b4027f4fd9d"
+  ]
 }
