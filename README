@@ -15,7 +15,7 @@ $ curl http://127.0.0.1:5000/smssync?task=send -d "to=33701020304" -d "message=C
  "uuid": "5e69c7ca-efec-42f3-a5a0-59ae4d927276"
 }
 
-$ curl http://127.0.0.1:5000/smssync?task=send
+$ curl http://127.0.0.1:5000/smssync?task=send | jshon
 {
   "payload": {
     "messages": [
