@@ -1,0 +1,42 @@
+Python Flask application for smssync.ushahidi
+http://smssync.ushahidi.com/developers/
+
+Usage
+=====
+
+$ python smsgateway.py
+
+
+
+$ curl http://127.0.0.1:5000/smssync?task=send -d "to=33701020304" -d "message=COUCOU" | jshon
+{
+ "message": "COUCOU",
+ "to": "33701020304",
+ "uuid": "5e69c7ca-efec-42f3-a5a0-59ae4d927276"
+}
+
+$ curl http://127.0.0.1:5000/smssync?task=send
+{
+  "payload": {
+    "messages": [
+      {
+        "message": "COUCOU", 
+        "to": "33701020304", 
+        "uuid": "5e69c7ca-efec-42f3-a5a0-59ae4d927276"
+      }
+    ], 
+    "secret": "mysecret", 
+    "task": "send"
+  }
+}
+
+$ curl http://127.0.0.1:5000/smssync?task=sent -H "Content-Type: application/json" -d '{"queued_messages=": [ "5e69c7ca-efec-42f3-a5a0-59ae4d927276" ]}'
+{
+  "message_uuids": []
+}
+or
+{
+  "message_uuids": [
+    "5e69c7ca-efec-42f3-a5a0-59ae4d927276"
+    ]
+}
