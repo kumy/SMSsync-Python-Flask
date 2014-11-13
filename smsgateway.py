@@ -32,7 +32,7 @@ class SMS(dict):
 
 class SMSSync(restful.Resource):
     def post(self):
-	task = request.args.get('task')
+        task = request.args.get('task')
         if task == "sent":
             data = { 'message_uuids': [] }
             response = request.get_json()
@@ -45,13 +45,13 @@ class SMSSync(restful.Resource):
                     if uuid == sms['uuid']:
                         messages.remove(sms)
 
-	    return jsonify(data)
+            return jsonify(data)
         else:
             to      = request.form.get('to')
             message = request.form.get('message')
             sms = SMS(to, message)
             messages.append(sms)
-	    return jsonify(sms)
+            return jsonify(sms)
 
     def get(self):
         task = request.args.get('task')
@@ -63,7 +63,7 @@ class SMSSync(restful.Resource):
                 'messages': messages
                 }
             }
-	return jsonify(data)
+        return jsonify(data)
 
 api.add_resource(SMSSync, '/smssync')
 
